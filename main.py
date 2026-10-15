@@ -15,11 +15,21 @@ print ("""
 [0;34m▀▀[0;37m                     [0;34m▀▀[0;37m         [0;34m▀▀[0;37m                      [0m
 """)
 
+ALLOWED_DOMAINS = {
+    '@gmail.com',
+    '@outlook.com',
+    '@hotmail.com',
+    '@proton.me',
+    '@icloud.com',
+    '@yahoo.com'
+}
+
 total_mails = []
 unique_mails = []
+valid_mails = []
 
 def show_options():
-    print(Fore.BLUE + "[01]  Process emails\n[02]  Remove Duplicate emails\n[03]  Remove Invalid emails\n[04]  Remove both Duplicate and Invalid emails\n[05]  Line up emails to send\n[06]  Personalized Email Sender Automation\n[07]  Show Options\n[08]  Help\n[09]  Exit\n")
+    print(Fore.BLUE + "\n[01]  Process emails\n[02]  Remove Duplicate emails\n[03]  Remove Invalid emails\n[04]  Remove both Duplicate and Invalid emails\n[05]  Line up emails to send\n[06]  Personalized Email Sender Automation\n[07]  Show Options\n[08]  Help\n[09]  Exit\n")
 
 # Example: 01 emails.txt emails2.txt emails3.txt
 def help_function():
@@ -34,12 +44,11 @@ def process_mails(email_files):
     print(Fore.GREEN + f"[=]   Processed Mails (uncleaned): {len(total_mails)}\n" + Style.RESET_ALL)
 
 def unique_mails():
-    
     try:
         global total_mails
         unique_emails = list(dict.fromkeys(total_mails))
-        print(f"[=]   Unique Mails (removed duplicates): {len(unique_emails)}")
-        print(f"[=]   Removed Mails (duplicates): {len(total_mails) - len(unique_emails)}\n")
+        print(f"[=]   Unique Mails (Final): {len(unique_emails)}")
+        print(f"[=]   Duplicate Mails (Removed): {len(total_mails) - len(unique_emails)}\n")
         total_mails = unique_emails
 
     except Exception as e:
@@ -48,6 +57,20 @@ def unique_mails():
     except KeyboardInterrupt:
         print(Fore.RED + "\n[-]   Keyboard Interrupt Detected. Quitting..." + Style.RESET_ALL)
         sys.exit()
+
+def is_valid_email():
+    global valid_mails, total_mails
+    for domain in ALLOWED_DOMAINS:
+        for mail in total_mails:
+            if mail.endswith(domain):
+                local_part = mail[:-len(domain)]
+                if local_part and '@' not in local_part and ' ' not in local_part:
+                    valid_mails.append(mail)
+
+    print(f"[=]   Valid Mails (Final): {len(valid_mails)}")
+    print(f"[=]   Invalid Mails (Removed): {len(total_mails) - len(valid_mails)}\n")    
+
+    total_mails = valid_mails
 
 def main():
     show_options()
@@ -65,8 +88,7 @@ def main():
                 unique_mails()
         
             elif userInput[:2] == "03":
-                print("03 pressed")
-                break
+                is_valid_email()
         
             elif userInput[:2] == "04":
                 print("04 pressed")
