@@ -29,12 +29,7 @@ unique_mails = []
 valid_mails = []
 
 def show_options():
-    print(Fore.BLUE + "\n[01]  Process emails\n[02]  Remove Duplicate emails\n[03]  Remove Invalid emails\n[04]  Remove both Duplicate and Invalid emails\n[05]  Line up emails to send\n[06]  Personalized Email Sender Automation\n[07]  Show Options\n[08]  Help\n[09]  Exit\n")
-
-# Example: 01 emails.txt emails2.txt emails3.txt
-def help_function():
-    print("Pressed Help Function.")
-    pass
+    print(Fore.BLUE + "\n[01]  Process emails\n[02]  Remove Duplicate emails\n[03]  Remove Invalid emails\n[04]  Remove both Duplicate and Invalid emails\n[05]  Line up emails to send (chunks.txt)\n[06]  Personalized Email Sender Automation\n[07]  Show Options\n[08]  Help\n[09]  Exit\n")
 
 def process_mails(email_files):
     for i in email_files:
@@ -72,6 +67,25 @@ def is_valid_email():
 
     total_mails = valid_mails
 
+def email_chunking(amount):
+    # Let's send 300bcc per mail
+    with open('chunks.txt', 'w', encoding='utf-8') as f:
+        total_lines = 0
+        for i in range(0, len(total_mails), amount):
+            chunk = total_mails[i:i+amount]
+            # Join with space (for email sending)
+            line = ' '.join(chunk)
+            f.write(line + '\n')
+            total_lines += 1
+
+    print(f"[=]   Amount of Lines: {total_lines}")
+    print(f"[=]   The Data is Generated in 'chunks.txt' \n")
+
+
+def help_function():
+    print("Pressed Help Function.")
+    pass
+
 def main():
     show_options()
     while True:
@@ -91,13 +105,18 @@ def main():
                 is_valid_email()
         
             elif userInput[:2] == "04":
-                print("04 pressed")
-                break
+                unique_mails()
+                is_valid_email()
         
             elif userInput[:2] == "05":
-                print("05 pressed")
-                break
-        
+                try:
+                    amount = userInput[2:].split(" ")
+                    print(f"Amount: {amount[1]}")
+                    email_chunking(int(amount[1]))
+
+                except Exception as e:
+                    print(Fore.RED + f"[-]   Error: {e}\n" + Style.RESET_ALL)
+                
             elif userInput[:2] == "06":
                 print("06 pressed")
                 break
