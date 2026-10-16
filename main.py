@@ -101,9 +101,8 @@ def email_chunking(amount):
     print(Fore.CYAN + f"[=]   The Data is Generated in 'chunks.txt' \n")
 
 def personalized_mails():
-    print("[=]   Enter certificates in the 'certificate' folder")
-    print("[=]   Therefore, fill up data in emails.json")
-    print("[=]   Therefore, fill up data in emails.json")
+    print(Fore.CYAN + "[=]   Make sure to enter certificates in the 'certificate' folder")
+    print(Fore.CYAN + "[=]   Make sure to fill up and match data in emails.json")
 
     SMTP_SERVER = "smtp.gmail.com"
     SMTP_PORT = 587
@@ -141,9 +140,9 @@ Best regards,
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
         server.login(YOUR_EMAIL, YOUR_APP_PASS)
-        print("[+]   Successfully connected to Gmail SMTP server")
+        print(Fore.CYAN + "[=]   Successfully connected to Gmail SMTP server")
     except Exception as e:
-        print(Fore.RED + f"[-]   Failed to connect to Gmail: {e}")
+        print(Fore.RED + f"[-]   Failed to connect to Gmail: {e}\n")
         return
 
     successful_emails = 0
@@ -188,18 +187,17 @@ Best regards,
 
             # Send
             server.send_message(msg)
-            print(f"[+] Sent certificate to: {recipient_email} ({file_name})")
+            print(f"[+]   Sent certificate to: {recipient_email} ({file_name})")
             successful_emails += 1
 
         except Exception as e:
-            print(f"[-] Failed to send to {recipient_email}: {e}")
+            print(Fore.RED + f"[-]   Failed to send to {recipient_email}.")
             failed_emails += 1
 
     server.quit()
-    print(f"\n[=] Summary: ")
-    print(f"[+] Successful: {successful_emails}")
-    print(f"[-] Failed: {failed_emails}")
-    print(f"[=] Total processed: {successful_emails + failed_emails}")
+    print(Fore.CYAN + f"\n[=]   Successful sent emails: {successful_emails}")
+    print(Fore.CYAN + f"[=]   Failed to send emails : {failed_emails}")
+    print(Fore.CYAN + f"[=]   Total processed emails: {successful_emails + failed_emails}\n")
 
 def help_function():
     print(Fore.CYAN + Style.BRIGHT + "\n" + "="*70)
