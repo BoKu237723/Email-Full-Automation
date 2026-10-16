@@ -48,15 +48,18 @@ def process_mails(email_files):
         with open(i, "r", encoding="utf-8") as file:
             for line in file:
                 total_mails.append(line.strip().lower())
-    print(Fore.GREEN + f"[=]   Processed Mails (uncleaned): {len(total_mails)}\n" + Style.RESET_ALL)
+    print(Fore.CYAN + f"[=]   Processed Mails (uncleaned): {len(total_mails)}\n" + Style.RESET_ALL)
 
 def unique_mails():
     try:
         global total_mails
-        unique_emails = list(dict.fromkeys(total_mails))
-        print(f"[=]   Unique Mails (Final): {len(unique_emails)}")
-        print(f"[=]   Duplicate Mails (Removed): {len(total_mails) - len(unique_emails)}\n")
-        total_mails = unique_emails
+        if not total_mails:
+            print(Fore.YELLOW + "[-]   Emails not found. Enter emails with [01] to process first.\n")
+        else:
+            unique_emails = list(dict.fromkeys(total_mails))
+            print(Fore.CYAN + f"[=]   Unique Mails (Final): {len(unique_emails)}")
+            print(Fore.CYAN + f"[=]   Duplicate Mails (Removed): {len(total_mails) - len(unique_emails)}\n")
+            total_mails = unique_emails
 
     except Exception as e:
         print(Fore.RED + f"[-]   Error: {e}")
@@ -67,15 +70,19 @@ def unique_mails():
 
 def is_valid_email():
     global valid_mails, total_mails
-    for domain in ALLOWED_DOMAINS:
-        for mail in total_mails:
-            if mail.endswith(domain):
-                local_part = mail[:-len(domain)]
-                if local_part and '@' not in local_part and ' ' not in local_part:
-                    valid_mails.append(mail)
+    if not total_mails:
+        print(Fore.YELLOW + "[-]   Emails not found. Enter emails with [01] to process first.\n")
+    else:
+        for domain in ALLOWED_DOMAINS:
+            for mail in total_mails:
+                if mail.endswith(domain):
+                    local_part = mail[:-len(domain)]
+                    if local_part and '@' not in local_part and ' ' not in local_part:
+                        valid_mails.append(mail)
+        print("Here")
 
-    print(f"[=]   Valid Mails (Final): {len(valid_mails)}")
-    print(f"[=]   Invalid Mails (Removed): {len(total_mails) - len(valid_mails)}\n")    
+        print(Fore.CYAN + f"[=]   Valid Mails (Final): {len(valid_mails)}")
+        print(Fore.CYAN + f"[=]   Invalid Mails (Removed): {len(total_mails) - len(valid_mails)}\n")    
 
     total_mails = valid_mails
 
@@ -90,8 +97,8 @@ def email_chunking(amount):
             f.write(line + '\n')
             total_lines += 1
 
-    print(f"[=]   Amount of Lines: {total_lines}")
-    print(f"[=]   The Data is Generated in 'chunks.txt' \n")
+    print(Fore.CYAN + f"[=]   Amount of Lines: {total_lines}")
+    print(Fore.CYAN + f"[=]   The Data is Generated in 'chunks.txt' \n")
 
 def personalized_mails():
     print("[=]   Enter certificates in the 'certificate' folder")
@@ -277,6 +284,8 @@ def main():
                 try:
                     email_files = userInput[3:].split(", ")
                     process_mails(email_files)
+                except FileNotFoundError:
+                    print(Fore.YELLOW + f"[-]   Please enter file(s) to process. Use ', ' to seperate files. (eg. 01 list1.txt, list2.txt.)\n")
                 except Exception as e:
                     print(Fore.RED + f"[-]   Error: {e}\n" + Style.RESET_ALL)
         
@@ -287,13 +296,24 @@ def main():
                 is_valid_email()
         
             elif userInput[:2] == "04":
-                unique_mails()
-                is_valid_email()
+                if not total_mails:
+                    print(Fore.YELLOW + "[-]   Emails not found. Enter emails with [01] to process first.\n")
+                else:
+                    unique_mails()
+                    is_valid_email()
         
             elif userInput[:2] == "05":
                 amount = userInput[2:].split(" ")
-                email_chunking(int(amount[1]))
-
+                try:
+                    if not total_mails:
+                        print(Fore.YELLOW + "[-]   Emails not found. Enter emails with [01] to process first.\n")
+                    else:
+                        email_chunking(int(amount[1]))
+                except IndexError:
+                    print(Fore.YELLOW + "[-]   Enter chunk size amount. eg. [05 300]\n")
+                except Exception as e:
+                    print(Fore.RED + f"[-]   Error: {e}\n" + Style.RESET_ALL)
+                    
             elif userInput[:2] == "06":
                 personalized_mails()
         
@@ -310,7 +330,7 @@ def main():
                 break
         
             else:
-                print("Invalid Input. Enter [06] to see options.\n")
+                print(Fore.RED + "[-]   Invalid Input. Enter [06] to see options.\n")
                 continue
     
         except KeyboardInterrupt:
