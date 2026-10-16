@@ -4,7 +4,10 @@
 
 <p align="center">
   <i align="center">Take the busywork out of your organization's email with Letto — So your team can focus on what matters most. 🚀</i>
-  <i align="center">Developed by BoKu</i>
+</p>
+
+<p align="center">
+    <i align="center">Developed by BoKu</i>
 </p>
 
 <h4 align="center">
