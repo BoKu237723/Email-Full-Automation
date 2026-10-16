@@ -1,6 +1,18 @@
 from colorama import Fore, Back, Style, init
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.base import MIMEBase
+from email import encoders
+from pathlib import Path
+import smtplib
+import json
 import time
 import sys
+import os
+
+from dotenv import load_dotenv, dotenv_values
+load_dotenv()
 
 print ("""
 [0;34m▄▄▄[0;34;47m▀▀▀[0;34m█[0;37m                [0;34m▄▄▄[0;34;47m▀▀▀[0;34m█[0;37m    [0;34m▄▄▄[0;34;47m▀▀▀[0;34m█[0;37m                 [0m
@@ -81,10 +93,180 @@ def email_chunking(amount):
     print(f"[=]   Amount of Lines: {total_lines}")
     print(f"[=]   The Data is Generated in 'chunks.txt' \n")
 
+def personalized_mails():
+    print("[=]   Enter certificates in the 'certificate' folder")
+    print("[=]   Therefore, fill up data in emails.json")
+    print("[=]   Therefore, fill up data in emails.json")
+
+    SMTP_SERVER = "smtp.gmail.com"
+    SMTP_PORT = 587
+    YOUR_EMAIL = os.getenv("MYEMAIL")
+    YOUR_APP_PASS = os.getenv("MYPASSWORD")
+
+    CERTIFICATES_FOLDER = "certificates"
+    EMAILS_JSON = "emails.json"
+
+    EMAIL_SUBJECT = "Your Certificate is Here!"
+    EMAIL_BODY = r"""Dear Participant,
+
+I hope this message finds you well.
+Please find attached your certificate, which recognizes your "achievement, e.g., successful completion of the recent training program" with our organization. 
+We hope you will proudly display this certificate as a testament to your hard work and dedication. Congratulations on your accomplishment!
+Best regards,
+"Test"
+"Testing"
+"Your Organization Name"
+"Your Contact Information"
+"""
+
+    try:
+        with open(EMAILS_JSON, 'r') as f:
+            email_data = json.load(f)
+    except FileNotFoundError:
+        print(Fore.RED + f"[-]   Error: {EMAILS_JSON} file not found!")
+        return
+    except json.JSONDecodeError:
+        print(Fore.RED + f"[-]   Error: {EMAILS_JSON} contains invalid JSON!")
+        return
+
+    # MAIL SMTP SERVER CONNECTION
+    try:
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(YOUR_EMAIL, YOUR_APP_PASS)
+        print("[+]   Successfully connected to Gmail SMTP server")
+    except Exception as e:
+        print(Fore.RED + f"[-]   Failed to connect to Gmail: {e}")
+        return
+
+    successful_emails = 0
+    failed_emails = 0
+
+    for entry in email_data:
+        recipient_email = entry.get('email')
+        file_name = entry.get('file')
+
+        if not recipient_email or not file_name:
+            print(Fore.RED + f"[-]   Skipping Invalid Entry: {entry} ")
+            failed_emails += 1
+            continue
+
+        file_path = os.path.join(CERTIFICATES_FOLDER, file_name)
+
+        if not os.path.exists(file_path):
+            print(Fore.RED + f"[-]   Certificate Path not found: {file_path}")
+            failed_emails += 1
+            continue
+
+        try:
+            msg = MIMEMultipart()
+            msg['From'] = YOUR_EMAIL
+            msg['To'] = recipient_email
+            msg['Subject'] = EMAIL_SUBJECT
+
+            # email body
+            msg.attach(MIMEText(EMAIL_BODY, 'plain'))
+
+            # certificate file
+            with open(file_path, 'rb') as attachment:
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment.read())
+
+            encoders.encode_base64(part)
+            part.add_header(
+                'Content-Disposition',
+                f'attachment; filename= {file_name}'
+            )
+            msg.attach(part)
+
+            # Send
+            server.send_message(msg)
+            print(f"[+] Sent certificate to: {recipient_email} ({file_name})")
+            successful_emails += 1
+
+        except Exception as e:
+            print(f"[-] Failed to send to {recipient_email}: {e}")
+            failed_emails += 1
+
+    server.quit()
+    print(f"\n[=] Summary: ")
+    print(f"[+] Successful: {successful_emails}")
+    print(f"[-] Failed: {failed_emails}")
+    print(f"[=] Total processed: {successful_emails + failed_emails}")
 
 def help_function():
-    print("Pressed Help Function.")
-    pass
+    print(Fore.CYAN + Style.BRIGHT + "\n" + "="*70)
+    print(" " * 22 + "HELP & DOCUMENTATION")
+    print("="*70 + Style.RESET_ALL)
+
+    print(Fore.YELLOW + "\n[!] How to input commands:" + Style.RESET_ALL)
+    print("    Type the 2-digit option number at the start of your input.")
+    print("    Example: " + Fore.GREEN + "01 emails.txt" + Style.RESET_ALL)
+
+    # ----- 01 -----
+    print(Fore.CYAN + "\n[01] Process Emails" + Style.RESET_ALL)
+    print("     Loads emails from one or more .txt files (one email per line).")
+    print("     All emails are combined into a single list for later use.")
+    print("     " + Fore.YELLOW + "Usage:" + Style.RESET_ALL +
+          " 01 file1.txt, file2.txt, file3.txt")
+    print("     " + Fore.YELLOW + "Note:" + Style.RESET_ALL +
+          " Separate multiple files with a comma + space (', ').")
+    print("     " + Fore.YELLOW + "Required before:" + Style.RESET_ALL +
+          " 02, 03, 04, 05")
+
+    # ----- 02 -----
+    print(Fore.CYAN + "\n[02] Remove Duplicate Emails" + Style.RESET_ALL)
+    print("     Removes duplicate entries from the processed list.")
+    print("     " + Fore.YELLOW + "Requires:" + Style.RESET_ALL + " 01 to be run first.")
+
+    # ----- 03 -----
+    print(Fore.CYAN + "\n[03] Remove Invalid Emails" + Style.RESET_ALL)
+    print("     Filters out emails whose domains are not in the allowed list.")
+    print("     " + Fore.YELLOW + "Allowed domains:" + Style.RESET_ALL)
+    for domain in sorted(ALLOWED_DOMAINS):
+        print(f"       - {domain}")
+    print("     " + Fore.YELLOW + "Requires:" + Style.RESET_ALL + " 01 to be run first.")
+
+    # ----- 04 -----
+    print(Fore.CYAN + "\n[04] Remove Duplicates + Invalid Emails" + Style.RESET_ALL)
+    print("     Combines options 02 and 03 in a single step.")
+    print("     " + Fore.YELLOW + "Requires:" + Style.RESET_ALL + " 01 to be run first.")
+
+    # ----- 05 -----
+    print(Fore.CYAN + "\n[05] Line Up Emails (Chunking)" + Style.RESET_ALL)
+    print("     Groups emails into space-separated chunks for BCC sending.")
+    print("     " + Fore.YELLOW + "Usage:" + Style.RESET_ALL +
+          " 05 <amount>   (e.g. 05 300)")
+    print("     " + Fore.YELLOW + "Output:" + Style.RESET_ALL +
+          " Writes results to 'chunks.txt'.")
+    print("     " + Fore.YELLOW + "Requires:" + Style.RESET_ALL + " 01 to be run first.")
+
+    # ----- 06 -----
+    print(Fore.CYAN + "\n[06] Personalized Email Sender" + Style.RESET_ALL)
+    print("     Sends personalized emails with attachments (e.g. certificates).")
+    print("     " + Fore.YELLOW + "Setup:" + Style.RESET_ALL)
+    print("       1. Place attachment files in the 'certificates' folder.")
+    print("       2. Edit 'emails.json' with entries like:")
+    print(Fore.WHITE + '          { "email": "user@example.com", "file": "cert.pdf" }' + Style.RESET_ALL)
+    print("       3. Set MYEMAIL and MYPASSWORD in your .env file.")
+    print("     " + Fore.YELLOW + "Note:" + Style.RESET_ALL +
+          " Does NOT require option 01. Can be used standalone.")
+
+    # ----- 07 -----
+    print(Fore.CYAN + "\n[07] Show Options" + Style.RESET_ALL)
+    print("     Displays the main menu.")
+
+    # ----- 08 -----
+    print(Fore.CYAN + "\n[08] Help" + Style.RESET_ALL)
+    print("     Displays this help documentation.")
+
+    # ----- 09 -----
+    print(Fore.CYAN + "\n[09] Exit" + Style.RESET_ALL)
+    print("     Quits the program. (Ctrl+C also works.)")
+
+    print(Fore.CYAN + "\n" + "="*70)
+    print(" " * 18 + "(Letto) Developed by BoKu~")
+    print("="*70 + "\n" + Style.RESET_ALL)
 
 def main():
     show_options()
@@ -109,17 +291,11 @@ def main():
                 is_valid_email()
         
             elif userInput[:2] == "05":
-                try:
-                    amount = userInput[2:].split(" ")
-                    print(f"Amount: {amount[1]}")
-                    email_chunking(int(amount[1]))
+                amount = userInput[2:].split(" ")
+                email_chunking(int(amount[1]))
 
-                except Exception as e:
-                    print(Fore.RED + f"[-]   Error: {e}\n" + Style.RESET_ALL)
-                
             elif userInput[:2] == "06":
-                print("06 pressed")
-                break
+                personalized_mails()
         
             elif userInput[:2] == "07":
                 show_options()
