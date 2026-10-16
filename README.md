@@ -20,7 +20,7 @@
   <a href="https://git-scm.com/">
     <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" alt="git" style="height: 20px;">
   </a>
-  <a href="https://github.com/BoKu237723/Email-Full-Automation">
+  <a href="https://github.com/BoKu237723/Letto">
     <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)" alt="github link" style="height: 20px;">
   </a>
 </h4>
@@ -91,7 +91,7 @@ Designed to reduce manual work and make email workflows more efficient, letting 
 
 ## Folder Structure 
 ```
-Email-Automation/
+Letto/
 ├── .venv/                     # Virtual Enviroment
 │   └── unique-files/          # Personalized file folder
 │       └── sample1.pdf
@@ -140,3 +140,31 @@ Place your attachment files in the `certificates` directory and configure `email
   }
 ]
 ```
+
+
+## Optimal
+### Installation
+
+This project uses [`uv`](https://docs.astral.sh/uv/) for fast and reliable Python environment and dependency management.
+
+1. Install `uv` by following the [official installation guide](https://docs.astral.sh/uv/getting-started/installation/).
+2. Clone the repository:
+
+   ```bash
+   git clone https://github.com/BoKu237723/Letto.git
+   cd Letto
+   ```
+
+3. Install the project dependencies:
+
+   ```bash
+   uv sync
+   ```
+
+4. Run the application:
+
+   ```bash
+   uv run main.py
+   ```
+
+**Note:** `uv sync` automatically creates a virtual environment and installs the dependencies defined in the project's configuration files.
