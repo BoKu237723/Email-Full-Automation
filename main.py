@@ -84,6 +84,7 @@ def is_valid_email():
         print(Fore.CYAN + f"[=]   Invalid Mails (Removed): {len(total_mails) - len(valid_mails)}\n")    
 
     total_mails = valid_mails
+    valid_mails = []
 
 def email_chunking(amount):
     # Let's send 300bcc per mail
@@ -289,7 +290,7 @@ def main():
                     email_files = userInput[3:].split(", ")
                     process_mails(email_files)
                 except FileNotFoundError:
-                    print(Fore.YELLOW + f"[-]   Please enter file(s) to process. Use ', ' to seperate files. (eg. 01 list1.txt, list2.txt.)\n")
+                    print(Fore.YELLOW + f"[-]   Please enter correct file(s) to process. Use ', ' to seperate files. (eg. 01 list1.txt, list2.txt.)\n")
                 except Exception as e:
                     print(Fore.RED + f"[-]   Error: {e}\n" + Style.RESET_ALL)
         
@@ -310,7 +311,7 @@ def main():
                 if not total_mails:
                     print(Fore.YELLOW + "[-]   Emails not found. Enter emails with [01] to process first.\n")
                 else:
-                    print(Fore.CYAN + f"[=]   Currently processing emails: {len(total_mails)}")
+                    print(Fore.CYAN + f"[=]   Currently processing emails: {len(total_mails)}\n")
         
             elif userInput[:2] == "06":
                 amount = userInput[2:].split(" ")
