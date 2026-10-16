@@ -41,7 +41,7 @@ unique_mails = []
 valid_mails = []
 
 def show_options():
-    print(Fore.BLUE + "\n[01]  Process emails\n[02]  Remove Duplicate emails\n[03]  Remove Invalid emails\n[04]  Remove both Duplicate and Invalid emails\n[05]  Line up emails to send (chunks.txt)\n[06]  Personalized Email Sender Automation\n[07]  Show Options\n[08]  Help\n[09]  Exit\n")
+    print(Fore.BLUE + "\n[01]  Process emails\n[02]  Remove Duplicate emails\n[03]  Remove Invalid emails\n[04]  Remove both Duplicate and Invalid emails\n[05]  See total amount of processed mails\n[06]  Line up emails to send (chunks.txt)\n[07]  Personalized Email Sender Automation\n[08]  Show Options\n[09]  Help\n[10]  Exit\n")
 
 def process_mails(email_files):
     for i in email_files:
@@ -79,7 +79,6 @@ def is_valid_email():
                     local_part = mail[:-len(domain)]
                     if local_part and '@' not in local_part and ' ' not in local_part:
                         valid_mails.append(mail)
-        print("Here")
 
         print(Fore.CYAN + f"[=]   Valid Mails (Final): {len(valid_mails)}")
         print(Fore.CYAN + f"[=]   Invalid Mails (Removed): {len(total_mails) - len(valid_mails)}\n")    
@@ -240,7 +239,12 @@ def help_function():
     print("     " + Fore.YELLOW + "Requires:" + Style.RESET_ALL + " 01 to be run first.")
 
     # ----- 05 -----
-    print(Fore.CYAN + "\n[05] Line Up Emails (Chunking)" + Style.RESET_ALL)
+    print(Fore.CYAN + "\n[05] See total amount of processed mails" + Style.RESET_ALL)
+    print("     See current total amount of processed emails.")
+
+
+    # ----- 06 -----
+    print(Fore.CYAN + "\n[06] Line Up Emails (Chunking)" + Style.RESET_ALL)
     print("     Groups emails into space-separated chunks for BCC sending.")
     print("     " + Fore.YELLOW + "Usage:" + Style.RESET_ALL +
           " 05 <amount>   (e.g. 05 300)")
@@ -248,8 +252,8 @@ def help_function():
           " Writes results to 'chunks.txt'.")
     print("     " + Fore.YELLOW + "Requires:" + Style.RESET_ALL + " 01 to be run first.")
 
-    # ----- 06 -----
-    print(Fore.CYAN + "\n[06] Personalized Email Sender" + Style.RESET_ALL)
+    # ----- 07 -----
+    print(Fore.CYAN + "\n[07] Personalized Email Sender" + Style.RESET_ALL)
     print("     Sends personalized emails with attachments (e.g. certificates).")
     print("     " + Fore.YELLOW + "Setup:" + Style.RESET_ALL)
     print("       1. Place attachment files in the 'certificates' folder.")
@@ -259,16 +263,16 @@ def help_function():
     print("     " + Fore.YELLOW + "Note:" + Style.RESET_ALL +
           " Does NOT require option 01. Can be used standalone.")
 
-    # ----- 07 -----
-    print(Fore.CYAN + "\n[07] Show Options" + Style.RESET_ALL)
+    # ----- 08 -----
+    print(Fore.CYAN + "\n[08] Show Options" + Style.RESET_ALL)
     print("     Displays the main menu.")
 
-    # ----- 08 -----
-    print(Fore.CYAN + "\n[08] Help" + Style.RESET_ALL)
+    # ----- 09 -----
+    print(Fore.CYAN + "\n[09] Help" + Style.RESET_ALL)
     print("     Displays this help documentation.")
 
-    # ----- 09 -----
-    print(Fore.CYAN + "\n[09] Exit" + Style.RESET_ALL)
+    # ----- 10 -----
+    print(Fore.CYAN + "\n[10] Exit" + Style.RESET_ALL)
     print("     Quits the program. (Ctrl+C also works.)")
 
     print(Fore.CYAN + "\n" + "="*70)
@@ -301,8 +305,14 @@ def main():
                 else:
                     unique_mails()
                     is_valid_email()
-        
+
             elif userInput[:2] == "05":
+                if not total_mails:
+                    print(Fore.YELLOW + "[-]   Emails not found. Enter emails with [01] to process first.\n")
+                else:
+                    print(Fore.CYAN + f"[=]   Currently processing emails: {len(total_mails)}")
+        
+            elif userInput[:2] == "06":
                 amount = userInput[2:].split(" ")
                 try:
                     if not total_mails:
@@ -310,22 +320,22 @@ def main():
                     else:
                         email_chunking(int(amount[1]))
                 except IndexError:
-                    print(Fore.YELLOW + "[-]   Enter chunk size amount. eg. [05 300]\n")
+                    print(Fore.YELLOW + "[-]   Enter chunk size amount. eg. [06 300]\n")
                 except Exception as e:
                     print(Fore.RED + f"[-]   Error: {e}\n" + Style.RESET_ALL)
                     
-            elif userInput[:2] == "06":
+            elif userInput[:2] == "07":
                 personalized_mails()
         
-            elif userInput[:2] == "07":
+            elif userInput[:2] == "08":
                 show_options()
                 continue
     
-            elif userInput[:2] == "08":
+            elif userInput[:2] == "09":
                 help_function()
                 continue
         
-            elif userInput[:2] == "09":
+            elif userInput[:2] == "10":
                 print("[=]   Existing..." + Style.RESET_ALL)
                 break
         
