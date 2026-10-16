@@ -1,10 +1,10 @@
 [
   {
     "email": "sample1@gmail.com",
-    "png": "sample1.pdf"
+    "file": "sample1.pdf"
   },
   {
     "email": "sample2@gmail.com",
-    "png": "sample2.pdf"
+    "file": "sample2.pdf"
   }
 ]
