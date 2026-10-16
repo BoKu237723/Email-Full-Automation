@@ -10,8 +10,8 @@
   <a href="https://docs.astral.sh/uv/">
     <img src="https://img.shields.io/badge/uv-Astral_DEVELOPMENT-DE5FE9?style=for-the-badge&logo=uv&logoColor=white" alt="uv by Astral" style="height: 20px;">
   </a>
-  <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="license" style="height: 20px;">
+  <a href="https://www.apache.org/licenses/LICENSE-2.0">
+    <img src="https://img.shields.io/badge/License-Apache 2.0-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="license" style="height: 20px;">
   </a>
   <br>
   <a href="https://www.python.org/">
@@ -168,3 +168,6 @@ This project uses [`uv`](https://docs.astral.sh/uv/) for fast and reliable Pytho
    ```
 
 **Note:** `uv sync` automatically creates a virtual environment and installs the dependencies defined in the project's configuration files.
+
+## License
+This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). Developers are free to use, modify, and distribute this software for personal or commercial purposes, provided that you comply with the license terms. The license also grants an express patent license and requires preservation of applicable copyright and license notices.
