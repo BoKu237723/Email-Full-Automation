@@ -6,6 +6,11 @@ dist/
 wheels/
 *.egg-info
 
+# testing mails
+re1-mail.txt
+re2-mail.txt
+re3-mail.txt
+
 # Virtual environments
 .venv
 emails.txt
