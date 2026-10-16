@@ -109,3 +109,34 @@ Email-Automation/
 └── uv.lock                    # uv's lock file, contains libraries and such
 ```
 
+## Usage
+
+Run the program and enter the two-digit option number followed by the required input, if any.
+
+### Available Options
+
+| Option | Description | Usage Samples | Requirements |
+|--------|-------------|-------|-------------|
+| `01` | Process Emails | `01 file1.txt, file2.txt` | Provide one or more `.txt` files containing one email address per line. Separate multiple filenames with a comma and a space. |
+| `02` | Remove Duplicate Emails | `02` | Require Option `01` to be executed first. |
+| `03` | Remove Invalid Emails which are also not in valid domain names| `03` | Require Option `01` to be executed first. |
+| `04` | Remove Duplicates and Invalid Emails | `04` | Require Option `01` to be executed first. |
+| `05` | View Total Processed Emails | `05` | Require Option `01` to be executed first. |
+| `06` | Split Emails into Chunks | `06 300` | Require Option `01` to be executed first. Specify the desired chunk size (eg. `06 300`). The output is saved to `chunks.txt`. |
+| `07` | Send Personalized Emails with Attachments | `07` | Works independently of the email processing options. Place attachments in the `certificates` folder, configure `emails.json`, and set `MYEMAIL` and `MYPASSWORD` in your `.env` file. |
+| `08` | Show Main Menu | `08` |  |
+| `09` | Display Help Documentation | `09` |  |
+| `10` | Exit the Program | `10` | Exits the program. You can also press `Ctrl+C` to interrupt execution. |
+
+### Personalized Email Configuration
+
+Place your attachment files in the `certificates` directory and configure `emails.json` as follows:
+
+```json
+[
+  {
+    "email": "user1@example.com",
+    "file": "cert1.pdf"
+  }
+]
+```
