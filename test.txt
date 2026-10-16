@@ -1,4 +1,0 @@
-sample1@gmail.com
-sample2@gmail.com
-sample3@gmail.com
-sample4@gmail.com
