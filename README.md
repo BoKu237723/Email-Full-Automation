@@ -145,7 +145,6 @@ Place your attachment files in the `certificates` directory and configure `email
 ]
 ```
 
-
 ## Optimal
 ### Installation
 
@@ -172,6 +171,10 @@ This project uses [`uv`](https://docs.astral.sh/uv/) for fast and reliable Pytho
    ```
 
 **Note:** `uv sync` automatically creates a virtual environment and installs the dependencies defined in the project's configuration files.
+
+## Contributors
+[//]: contributor-faces
+<a href="https://github.com/boku237723@gmail.com"><img src="https://github.com/BoKu237723.png?utm_source=chatgpt.com" title="BoKu" width="50" height="50"></a>
 
 ## License
 This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). Developers are free to use, modify, and distribute this software for personal or commercial purposes, provided that you comply with the license terms. The license also grants an express patent license and requires preservation of applicable copyright and license notices.
